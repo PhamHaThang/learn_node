@@ -17,7 +17,7 @@ const port = process.env.PORT;
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
 //Config static file
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, "public")));
 //App locals variables
 app.locals.prefixAdmin = systemConfig.prefixAdmin;
 // override with POST having ?_method=DELETE
