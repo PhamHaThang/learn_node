@@ -39,3 +39,5 @@ adminRoute(app);
     console.log(`App listening on http://localhost:${port}`);
   });
 })();
+
+module.exports = app;
