@@ -13,7 +13,7 @@ require("dotenv").config();
 const app = express();
 const port = process.env.PORT;
 //Config view engine
-app.set("views", `${__dirname}/view`);
+app.set("views", `${__dirname}/views`);
 app.set("view engine", "pug");
 //Config static file
 app.use(express.static(`${__dirname}/public`));
