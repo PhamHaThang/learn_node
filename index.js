@@ -1,5 +1,4 @@
 const express = require("express");
-const path = require("path");
 const clientRoute = require("./routers/client/index.route");
 const adminRoute = require("./routers/admin/index.route");
 const database = require("./config/database");
@@ -14,10 +13,10 @@ require("dotenv").config();
 const app = express();
 const port = process.env.PORT;
 //Config view engine
-app.set("views", path.join(__dirname, "views"));
+app.set("views", `${__dirname}/view`);
 app.set("view engine", "pug");
 //Config static file
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(`${__dirname}/public`));
 //App locals variables
 app.locals.prefixAdmin = systemConfig.prefixAdmin;
 // override with POST having ?_method=DELETE
