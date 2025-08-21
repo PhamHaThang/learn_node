@@ -20,6 +20,11 @@ route.post(
   controller.createPost
 );
 route.get("/edit/:id", controller.edit);
-route.put("/edit/:id", upload.single("thumbnail"), controller.editPut);
+route.put(
+  "/edit/:id",
+  upload.single("thumbnail"),
+  uploadCloud.upload,
+  controller.editPut
+);
 route.get("/detail/:id", controller.detail);
 module.exports = route;

@@ -148,9 +148,9 @@ module.exports.editPut = async (req, res) => {
   } else {
     req.body.position = +req.body.position;
   }
-  if (req.file) {
-    req.body.thumbnail = `/uploads/${req.file.filename}`;
-  }
+  // if (req.file) {
+  //   req.body.thumbnail = `/uploads/${req.file.filename}`;
+  // }
   try {
     await Product.updateOne({ _id: req.params.id }, req.body);
     req.flash("success", "Cập nhật thành công");
