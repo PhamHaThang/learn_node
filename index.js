@@ -7,16 +7,17 @@ const methodOverride = require("method-override");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const flash = require("express-flash");
+const path = require("path");
 
 require("dotenv").config();
 
 const app = express();
 const port = process.env.PORT;
 //Config view engine
-app.set("views", `${__dirname}/views`);
+app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
 //Config static file
-app.use(express.static(`${__dirname}/public`));
+app.use(express.static(path.join(__dirname, "public")));
 //App locals variables
 app.locals.prefixAdmin = systemConfig.prefixAdmin;
 // override with POST having ?_method=DELETE
