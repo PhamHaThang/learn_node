@@ -112,7 +112,6 @@ module.exports.create = (req, res) => {
 };
 // [POST] /admin/products/create
 module.exports.createPost = async (req, res) => {
-  req.body.description = req.body.description[0];
   req.body.price = +req.body.price;
   req.body.discountPercentage = +req.body.discountPercentage;
   req.body.stock = +req.body.stock;
@@ -144,7 +143,6 @@ module.exports.edit = async (req, res) => {
 
 // [PUT] /admin/products/edit/:id
 module.exports.editPut = async (req, res) => {
-  req.body.description = req.body.description[0];
   req.body.price = +req.body.price;
   req.body.discountPercentage = +req.body.discountPercentage;
   req.body.stock = +req.body.stock;
