@@ -29,6 +29,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser("keyboard cat"));
 app.use(session({ cookie: { maxAge: 60000 } }));
 app.use(flash());
+//TinyMCE
+app.use(
+  "/tinymce",
+  express.static(path.join(__dirname, "node_modules", "tinymce"))
+);
 //Routes
 clientRoute(app);
 adminRoute(app);

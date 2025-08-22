@@ -21,7 +21,7 @@ block main
     if(product.position)
         .mb-4 Vị trí:  <b>#{product.position}</b>
     if(product.description)
-        .mb-4 Mô tả:  <b>#{product.description}</b>
+        .mb-4 Mô tả:  <b>!{product.description}</b>
     a.btn.btn-warning(href=`${prefixAdmin}/products/edit/${product.id}`) Sửa
 
     script(src="/admin/js/product.js") 
