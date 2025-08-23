@@ -70,7 +70,7 @@ block main
                 )
             img(src=product.thumbnail
                 upload-image-preview 
-                class="image-preview"
+                class=`image-preview ${!product.thumbnail ?"d-none":""}`
                 )
         .form-group 
             label(for="position") Vị trí
