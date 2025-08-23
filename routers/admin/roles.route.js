@@ -6,4 +6,6 @@ route.get("/create", controller.create);
 route.post("/create", controller.createPost);
 route.get("/edit/:id", controller.edit);
 route.put("/edit/:id", controller.editPut);
+route.get("/permissions", controller.permissions);
+route.put("/permissions", controller.permissionsPut);
 module.exports = route;
