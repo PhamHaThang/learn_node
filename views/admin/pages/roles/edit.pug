@@ -1,0 +1,35 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+block main 
+    +alert-success(5000)
+    +alert-error(5000)
+    h1(class="mb-4") Sửa nhóm quyền
+
+    form(
+        action=`${prefixAdmin}/roles/edit/${data.id}?_method=PUT`, 
+        method="POST" ) 
+        .form-group 
+            label(for="title") Tiêu đề
+            input(
+                type="text", 
+                class ="form-control"
+                id="title"
+                name="title"
+                value=data.title
+                required
+                )
+        .form-group 
+            label(for="desc") Mô tả
+            textarea(
+                class ="form-control"
+                id="desc"
+                name="description"
+                rows="5"
+                value=data.description
+                ) #{data.description}
+        .form-group
+            button(
+                type="submit"
+                class ="btn btn-primary"
+            ) Lưu
+    
