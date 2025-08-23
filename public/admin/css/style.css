@@ -90,3 +90,6 @@
   padding: 15px;
   border-radius: 5px;
 }
+.image-preview[src=""] {
+  display: none;
+}

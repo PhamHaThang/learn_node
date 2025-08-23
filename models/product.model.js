@@ -8,6 +8,10 @@ const productSchema = new mongoose.Schema(
     price: Number,
     discountPercentage: Number,
     stock: Number,
+    product_category_id: {
+      type: String,
+      default: "",
+    },
     thumbnail: String,
     status: String,
     position: Number,

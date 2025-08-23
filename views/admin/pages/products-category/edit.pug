@@ -3,11 +3,10 @@ include ../../mixins/alert.pug
 include ../../mixins/select-tree.pug
 block main 
     +alert-error(5000)
-    h1(class="mb-4") Thêm mới sản phẩm 
+    h1(class="mb-4") Chỉnh sửa danh mục sản phẩm
 
     form(
-        action=`${prefixAdmin}/products/create`, 
-        id="form-create-product"
+        action=`${prefixAdmin}/products-category/edit/${record.id}?_method=PUT`, 
         method="POST" 
         enctype="multipart/form-data") 
         .form-group 
@@ -18,17 +17,18 @@ block main
                 id="title"
                 name="title"
                 required
+                value=record.title
                 )
         .form-group 
-            label(for="product_category_id") Danh mục
+            label(for="parent_id") Danh mục cha
             select(
-                name="product_category_id"
-                id="product_category_id"
+                name="parent_id"
+                id="parent_id"
                 class="form-control"
             )
-                option(value="") -- Chọn danh mục --
-                if(category)
-                    +select-tree(category)
+                option(value="") -- Chọn danh mục cha --
+                if(records)
+                    +select-tree(records,1,record.parent_id)
         .form-group 
             label(for="desc") Mô tả
             textarea(
@@ -36,37 +36,8 @@ block main
                 id="desc"
                 name="description"
                 rows="5"
-                )
-        .form-group 
-            label(for="price") Giá
-            input(
-                type="number", 
-                class ="form-control"
-                id="price"
-                name="price"
-                value="0"
-                min="0"
-                )
-        .form-group 
-            label(for="discount") % Giảm giá
-            input(
-                type="number", 
-                class ="form-control"
-                id="discount"
-                name="discountPercentage"
-                value="0"
-                min="0"
-                )
-        .form-group 
-            label(for="stock") Số lượng
-            input(
-                type="number", 
-                class ="form-control"
-                id="stock"
-                name="stock"
-                value="0"
-                min="0"
-                )
+                value= record.description
+                ) !{record.description}
         .form-group(upload-image)
             label(for="thumbnail") Ảnh
             input(
@@ -75,10 +46,12 @@ block main
                 id="thumbnail"
                 name="thumbnail"
                 accept="image/*"
+                value=record.thumbnail
                 upload-image-input
                 )
-            img(src="" upload-image-preview 
-                class="image-preview"
+            img(src=record.thumbnail
+                upload-image-preview 
+                class=`image-preview ${record.thumbnail?"":"d-none"}`
                 )
         .form-group 
             label(for="position") Vị trí
@@ -89,6 +62,7 @@ block main
                 name="position"
                 placeholder="Tự động tăng"
                 min="1"
+                value=record.position
                 )
         .form-group.form-check.form-check-inline 
             input(
@@ -97,7 +71,7 @@ block main
                 id="statusActive"
                 name ="status"
                 value="active"
-                checked
+                checked=(record.status=="active")
                 )
             label(for="statusActive" class="form-check-label") Hoạt động
         .form-group.form-check.form-check-inline 
@@ -107,12 +81,13 @@ block main
                 id="statusInactive"
                 name ="status"
                 value="inactive"
+                checked=(record.status=="inactive")
                 )
             label(for="statusInactive" class="form-check-label") Dừng hoạt động
         .form-group
             button(
                 type="submit"
                 class ="btn btn-primary"
-            ) Tạo mới
-    
+            ) Lưu
     script(src="/admin/js/product.js") 
+    
