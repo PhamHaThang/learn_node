@@ -87,7 +87,7 @@ module.exports.editPut = async (req, res) => {
     req.flash("success", "Cập nhật tài khoản thành công");
     res.redirect(`${systemConfig.prefixAdmin}/accounts`);
   } catch (error) {
-    req.flash("error", "Cập nhật khoản thất bại");
+    req.flash("error", "Cập nhật tài khoản thất bại");
     res.redirect(`${systemConfig.prefixAdmin}/accounts`);
   }
 };

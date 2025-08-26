@@ -33,10 +33,10 @@ module.exports.editPut = async (req, res) => {
       return;
     }
     await Account.updateOne({ _id: id }, req.body);
-    req.flash("success", "Cập nhật tài khoản thành công");
+    req.flash("success", "Cập nhật thông tin tài khoản thành công");
     res.redirect(`${systemConfig.prefixAdmin}/my-account/edit`);
   } catch (error) {
-    req.flash("error", "Cập nhật khoản thất bại");
+    req.flash("error", "Cập nhật thông tin tài khoản thất bại");
     res.redirect(`${systemConfig.prefixAdmin}/my-account`);
   }
 };
