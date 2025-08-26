@@ -29,6 +29,26 @@ block main
                 option(value="") -- Chọn danh mục --
                 if(category)
                     +select-tree(category,1,product.product_category_id)
+        .form-group.form-check.form-check-inline 
+            input(
+                type="radio", 
+                class="form-check-input"
+                id="feature1"
+                name ="featured"
+                value="1"
+                checked=(product.featured=="1")
+                )
+            label(for="feature1" class="form-check-label") Nổi bật
+        .form-group.form-check.form-check-inline 
+            input(
+                type="radio", 
+                class="form-check-input"
+                id="feature0"
+                name ="featured"
+                value="0"
+                checked=(product.featured=="0")
+                )
+            label(for="feature0" class="form-check-label") Không nổi bật
         .form-group 
             label(for="desc") Mô tả
             textarea(
