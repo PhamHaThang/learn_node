@@ -14,18 +14,31 @@ module.exports.index = async (req, res) => {
     products: newProducts,
   });
 };
-// [GET] /products/:slug
+// [GET] /products/detail/:slug
 module.exports.detail = async (req, res) => {
-  const product = await Product.findOne({
-    status: "active",
-    deleted: false,
-    slug: req.params.slug,
-  });
-  console.log(product);
-  res.render("client/pages/products/detail", {
-    pageTitle: product.title,
-    product: product,
-  });
+  try {
+    const product = await Product.findOne({
+      status: "active",
+      deleted: false,
+      slug: req.params.slug,
+    });
+    if (product.product_category_id) {
+      const category = await ProductCategory.findOne({
+        _id: product.product_category_id,
+        status: "active",
+        deleted: false,
+      });
+      product.category = category;
+    }
+    product.priceNew = productHelper.priceNewProduct(product);
+    res.render("client/pages/products/detail", {
+      pageTitle: product.title,
+      product: product,
+    });
+  } catch (error) {
+    console.log(error);
+    res.redirect("/products");
+  }
 };
 // [GET] /products/:slugCategory
 module.exports.category = async (req, res) => {
