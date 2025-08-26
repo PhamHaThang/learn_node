@@ -26,15 +26,21 @@ module.exports.create = async (req, res) => {
 };
 // [POST] /admin/products-category/create
 module.exports.createPost = async (req, res) => {
-  if (req.body.position == "") {
-    const countProducts = await ProductCategory.countDocuments();
-    req.body.position = countProducts + 1;
+  const permissions = res.locals.role.permissions;
+  if (permissions.includes("product-category_create")) {
+    if (req.body.position == "") {
+      const countProducts = await ProductCategory.countDocuments();
+      req.body.position = countProducts + 1;
+    } else {
+      req.body.position = +req.body.position;
+    }
+    const productCategory = new ProductCategory(req.body);
+    await productCategory.save();
+    res.redirect(`${systemConfig.prefixAdmin}/products-category`);
   } else {
-    req.body.position = +req.body.position;
+    res.send("403");
+    return;
   }
-  const productCategory = new ProductCategory(req.body);
-  await productCategory.save();
-  res.redirect(`${systemConfig.prefixAdmin}/products-category`);
 };
 // [GET] /admin/products-category/edit/:id
 module.exports.edit = async (req, res) => {

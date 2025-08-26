@@ -22,7 +22,6 @@ module.exports.upload = (req, res, next) => {
     };
     async function upload(req) {
       let result = await streamUpload(req);
-      console.log(result.secure_url);
       req.body[req.file.fieldname] = result.secure_url;
       next();
     }

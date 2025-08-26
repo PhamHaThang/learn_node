@@ -57,7 +57,6 @@ module.exports.index = async (req, res) => {
       product.userUpdate = userUpdate.fullName;
     }
   }
-  console.log(products[0]);
   res.render("admin/pages/products/index", {
     pageTitle: "Danh sách sản phẩm",
     products: products,
@@ -117,7 +116,6 @@ module.exports.changeMulti = async (req, res) => {
     case "change-position":
       for (const item of ids) {
         let [id, position] = item.split("-");
-        console.log(id, position);
         await Product.updateOne(
           { _id: id },
           { position: +position, $push: { updatedBy: updatedBy } }
@@ -226,7 +224,6 @@ module.exports.editPut = async (req, res) => {
   } catch (error) {
     req.flash("error", "Cập nhật thất bại");
     res.redirect(req.get("Referrer") || "/admin/products");
-    console.log(error);
   }
 };
 // [GET] /admin/products/detail/:id
