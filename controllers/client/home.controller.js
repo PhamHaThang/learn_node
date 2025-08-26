@@ -7,9 +7,18 @@ module.exports.index = async (req, res) => {
     featured: "1",
     status: "active",
   }).limit(6);
-  const newProducts = productHelper.priceNewProducts(productsFeatured);
+  const newProductsFeatured = productHelper.priceNewProducts(productsFeatured);
+
+  const productsNew = await Product.find({
+    deleted: false,
+    status: "active",
+  })
+    .limit(6)
+    .sort({ position: "desc" });
+  const newProductsNew = productHelper.priceNewProducts(productsNew);
   res.render("client/pages/home/index", {
     pageTitle: "Trang chủ",
-    productsFeatured: newProducts,
+    productsFeatured: newProductsFeatured,
+    productsNew: newProductsNew,
   });
 };
