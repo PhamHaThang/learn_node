@@ -83,7 +83,6 @@ module.exports.editPut = async (req, res) => {
       res.redirect("/admin/accounts/create");
       return;
     }
-    console.log(req.body);
     await Account.updateOne({ _id: req.params.id }, req.body);
     req.flash("success", "Cập nhật tài khoản thành công");
     res.redirect(`${systemConfig.prefixAdmin}/accounts`);
