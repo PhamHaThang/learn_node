@@ -1,5 +1,6 @@
 const Product = require("../../models/product.model");
 const ProductCategory = require("../../models/product-category.model");
+const Account = require("../../models/account.model");
 const filterStatusHelper = require("../../helpers/filterStatus");
 const systemConfig = require("../../config/systems");
 const searchHelper = require("../../helpers/search");
@@ -41,6 +42,22 @@ module.exports.index = async (req, res) => {
     .sort(sort)
     .limit(objectPagination.limitItems)
     .skip(objectPagination.skip);
+  for (const product of products) {
+    const user = await Account.findOne({
+      _id: product.createdBy.account_id,
+    });
+    if (user) {
+      product.userCreate = user.fullName;
+    }
+    const updatedBy = product.updatedBy[product.updatedBy.length - 1];
+    if (updatedBy) {
+      const userUpdate = await Account.findOne({
+        _id: updatedBy.account_id,
+      });
+      product.userUpdate = userUpdate.fullName;
+    }
+  }
+  console.log(products[0]);
   res.render("admin/pages/products/index", {
     pageTitle: "Danh sách sản phẩm",
     products: products,
@@ -54,7 +71,15 @@ module.exports.index = async (req, res) => {
 module.exports.changeStatus = async (req, res) => {
   const status = req.params.status;
   const id = req.params.id;
-  await Product.updateOne({ _id: id }, { status: status });
+  const updatedBy = {
+    account_id: res.locals.user.id,
+    updatedAt: new Date(),
+  };
+
+  await Product.updateOne(
+    { _id: id },
+    { status: status, $push: { updatedBy: updatedBy } }
+  );
   req.flash("success", "Cập nhật trạng thái sản phẩm thành công!");
   res.redirect(`${systemConfig.prefixAdmin}/products`);
 };
@@ -63,10 +88,17 @@ module.exports.changeStatus = async (req, res) => {
 module.exports.changeMulti = async (req, res) => {
   const type = req.body.type;
   const ids = req.body.ids.split(", ");
+  const updatedBy = {
+    account_id: res.locals.user.id,
+    updatedAt: new Date(),
+  };
   switch (type) {
     case "active":
     case "inactive":
-      await Product.updateMany({ _id: { $in: ids } }, { status: type });
+      await Product.updateMany(
+        { _id: { $in: ids } },
+        { status: type, $push: { updatedBy: updatedBy } }
+      );
       req.flash(
         "success",
         `Cập nhật trạng thái thành công ${ids.length} sản phẩm!`
@@ -75,7 +107,10 @@ module.exports.changeMulti = async (req, res) => {
     case "delete-all":
       await Product.updateMany(
         { _id: { $in: ids } },
-        { deleted: true, deletedAt: new Date() }
+        {
+          deleted: true,
+          deletedBy: { account_id: res.locals.user.id, deletedAt: new Date() },
+        }
       );
       req.flash("success", `Xóa thành công ${ids.length} sản phẩm!`);
       break;
@@ -83,7 +118,10 @@ module.exports.changeMulti = async (req, res) => {
       for (const item of ids) {
         let [id, position] = item.split("-");
         console.log(id, position);
-        await Product.updateOne({ _id: id }, { position: +position });
+        await Product.updateOne(
+          { _id: id },
+          { position: +position, $push: { updatedBy: updatedBy } }
+        );
       }
       req.flash(
         "success",
@@ -101,7 +139,10 @@ module.exports.deleteItem = async (req, res) => {
   const id = req.params.id;
   await Product.updateOne(
     { _id: id },
-    { deleted: true, deletedAt: new Date() }
+    {
+      deleted: true,
+      deletedBy: { account_id: res.locals.user.id, deletedAt: new Date() },
+    }
   );
   // await Product.deleteOne({ _id: id });
   res.redirect(`${systemConfig.prefixAdmin}/products`);
@@ -127,6 +168,9 @@ module.exports.createPost = async (req, res) => {
   } else {
     req.body.position = +req.body.position;
   }
+  req.body.createdBy = {
+    account_id: res.locals.user.id,
+  };
   const product = new Product(req.body);
   await product.save();
   res.redirect(`${systemConfig.prefixAdmin}/products`);
@@ -165,7 +209,18 @@ module.exports.editPut = async (req, res) => {
   //   req.body.thumbnail = `/uploads/${req.file.filename}`;
   // }
   try {
-    await Product.updateOne({ _id: req.params.id }, req.body);
+    const updatedBy = {
+      account_id: res.locals.user.id,
+      updatedAt: new Date(),
+    };
+
+    await Product.updateOne(
+      { _id: req.params.id },
+      {
+        ...req.body,
+        $push: { updatedBy: updatedBy },
+      }
+    );
     req.flash("success", "Cập nhật thành công");
     res.redirect(`${systemConfig.prefixAdmin}/products`);
   } catch (error) {

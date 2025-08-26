@@ -8,6 +8,7 @@ const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const flash = require("express-flash");
 const path = require("path");
+const moment = require("moment");
 
 require("dotenv").config();
 
@@ -19,6 +20,7 @@ app.set("view engine", "pug");
 //Config static file
 app.use(express.static(path.join(__dirname, "public")));
 //App locals variables
+app.locals.moment = moment;
 app.locals.prefixAdmin = systemConfig.prefixAdmin;
 // override with POST having ?_method=DELETE
 app.use(methodOverride("_method"));
@@ -37,7 +39,6 @@ app.use(
 //Routes
 clientRoute(app);
 adminRoute(app);
-
 (async () => {
   await database.connect();
   app.listen(port, () => {
