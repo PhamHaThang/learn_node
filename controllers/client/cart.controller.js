@@ -1,10 +1,10 @@
-const { cardId } = require("../../middlewares/client/cart.middleware");
+const { cartId } = require("../../middlewares/client/cart.middleware");
 const Cart = require("../../models/cart.model");
 // [POST] /cart/add/:productId
 module.exports.addPost = async (req, res) => {
   const productId = req.params.productId;
   const quantity = +req.body.quantity;
-  const cartId = req.cookies.cardId;
+  const cartId = req.cookies.cartId;
   const cart = await Cart.findOne({
     _id: cartId,
   });
