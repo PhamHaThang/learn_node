@@ -1,5 +1,30 @@
-const { cartId } = require("../../middlewares/client/cart.middleware");
 const Cart = require("../../models/cart.model");
+const Product = require("../../models/product.model");
+const productHelper = require("../../helpers/product");
+// [GET] /cart
+module.exports.index = async (req, res) => {
+  const cart = await Cart.findOne({ _id: req.cookies.cartId });
+  if (cart.products.length > 0) {
+    for (const item of cart.products) {
+      const productInfo = await Product.findOne({
+        _id: item.product_id,
+        deleted: false,
+        status: "active",
+      }).select("title thumbnail slug price discountPercentage");
+      productInfo.priceNew = productHelper.priceNewProduct(productInfo);
+      item.productInfo = productInfo;
+      item.totalPrice = productInfo.priceNew * item.quantity;
+    }
+    cart.totalPrice = cart.products.reduce(
+      (sum, item) => sum + item.totalPrice,
+      0
+    );
+  }
+  res.render("client/pages/cart/index", {
+    pageTitle: "Giỏ hàng",
+    cartDetail: cart,
+  });
+};
 // [POST] /cart/add/:productId
 module.exports.addPost = async (req, res) => {
   const productId = req.params.productId;
