@@ -1,5 +1,6 @@
 const md5 = require("md5");
 const User = require("../../models/user.model");
+const Cart = require("../../models/cart.model");
 const { generateRandomNumber } = require("../../helpers/generate");
 const ForgotPassword = require("../../models/forgot-password.model");
 const sendMailHelper = require("../../helpers/sendMail");
@@ -22,6 +23,12 @@ module.exports.registerPost = async (req, res) => {
   const user = new User(req.body);
   await user.save();
   res.cookie("tokenUser", user.tokenUser);
+  const existCart = await Cart.findOne({ user_id: user.id });
+  if (existCart) {
+    res.cookie("cartId", existCart.id);
+  } else {
+    await Cart.updateOne({ _id: req.cookies.cartId }, { user_id: user.id });
+  }
   res.redirect("/");
 };
 // [GET] /user/login
@@ -49,11 +56,18 @@ module.exports.loginPost = async (req, res) => {
     res.redirect(req.get("Referrer") || "/user/login");
     return;
   }
+  const existCart = await Cart.findOne({ user_id: user.id });
+  if (existCart) {
+    res.cookie("cartId", existCart.id);
+  } else {
+    await Cart.updateOne({ _id: req.cookies.cartId }, { user_id: user.id });
+  }
   res.cookie("tokenUser", user.tokenUser);
   res.redirect("/");
 };
 // [GET] /user/logout
 module.exports.logout = async (req, res) => {
+  res.clearCookie("cartId");
   res.clearCookie("tokenUser");
   res.redirect("/");
 };
