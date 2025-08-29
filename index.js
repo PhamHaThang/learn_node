@@ -39,6 +39,12 @@ app.use(
 //Routes
 clientRoute(app);
 adminRoute(app);
+app.use((req, res, next) => {
+  res.status(404).render("client/pages/errors/404", {
+    pageTitle: "404 Not Found",
+  });
+});
+
 (async () => {
   await database.connect();
   app.listen(port, () => {
