@@ -29,3 +29,21 @@ module.exports.loginPost = (req, res, next) => {
   }
   next();
 };
+module.exports.resetPasswordPost = (req, res, next) => {
+  if (!req.body.password) {
+    req.flash("error", "Vui lòng nhập mật khẩu mới");
+    res.redirect(req.get("Referrer"));
+    return;
+  }
+  if (!req.body.passwordConfirm) {
+    req.flash("error", "Vui lòng nhập mật khẩu xác nhận");
+    res.redirect(req.get("Referrer"));
+    return;
+  }
+  if (req.body.password !== req.body.passwordConfirm) {
+    req.flash("error", "Mật khẩu không khớp");
+    res.redirect(req.get("Referrer"));
+    return;
+  }
+  next();
+};
